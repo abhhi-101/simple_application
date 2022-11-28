@@ -1,11 +1,9 @@
 // IMPORTS
-
 const express = require("express");
 const cookieSession = require("cookie-session");
 
 const User = require("./models/user");
 const Mongoose = require("mongoose");
-
 
 // CONFIG
 const app = express();
@@ -61,7 +59,6 @@ app
   .get("/admin/users", (req, res) => {
     res.send("Only accepting POST requests!");
   })
-  
 
 // ROUTES FOR HANDLING THE POST & GET REQUESTS
 
@@ -259,6 +256,10 @@ function isValidUrl(urlString) {
 const fs = require('fs');
 const fetch = require('node-fetch');
 const e = require("express");
+
+if (!fs.existsSync('./images')){
+    fs.mkdirSync('./images');
+}
 
 async function downloadImage(url) {
   const response = await fetch(url);
