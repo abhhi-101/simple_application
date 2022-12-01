@@ -1,11 +1,10 @@
-// IMPORTS
+// IMPORTS & CONFIG
 const express = require("express");
 const cookieSession = require("cookie-session");
 
 const User = require("./models/user");
 const Mongoose = require("mongoose");
 
-// CONFIG
 const app = express();
 
 app.use(express.json());
@@ -60,13 +59,16 @@ app
     res.send("Only accepting POST requests!");
   })
 
+  .get("/change-password", forbidden, (req, res) =>{
+    res.render("change.ejs", {error: "", username: req.session.user.username});
+  })
+
 // ROUTES FOR HANDLING THE POST & GET REQUESTS
 
 // Login
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
-    // check for missing filds
     if (!username || !password)
       return res.render("login", {error: "Please enter all the fields!"});
     else {
@@ -96,11 +98,11 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
     const { username, password } = req.body;
 
-    if (!username || !password) return res.render("register", {error: "Please enter all the fields!"});
+    if (!username || !password)
+      return res.render("register", {error: "Please enter all the fields!"});
 
-    const doesUserExitsAlreay = await User.findOne({ username });
-
-    if (doesUserExitsAlreay) return res.render("register", {error: "Username already taken!"});
+    if (await User.findOne({ username }))
+      return res.render("register", {error: "Username already taken!"});
 
     const lastuid = await User.findOne({},{'userid':1}).sort({'userid':-1});
 
@@ -232,6 +234,25 @@ app.post("/admin/users", async (req, res) => {
     data = JSON.stringify(users, ["userid", "username", "time", "role", "urls"], 4);
   
     res.render("admin", {error: "", data: data});
+});
+
+// Change password
+app.post("/change-password", forbidden, async (req, res) => {
+  const {username, password} = req.body;
+
+  if (await User.findOne({ username })) {
+    User.updateOne({username: username}, 
+      {$set: {password :password}}, function (err) {
+        if (err)
+          console.log(err)
+        else
+          res.render("change", {error: "Password changed...", username: req.session.user.username});
+      });
+    }
+    else {
+      var msg = "Unexpected error: no such user " + username;
+      res.render("change", {error: msg, username: req.session.user.username});
+    }
 });
 
 // SERVER CONFIGURATION

