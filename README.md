@@ -7,7 +7,7 @@
 - **Database**: MongoDB
 - **Platform (developed on)**: Ubuntu 20.04
 
-## Run in Docker [Commands]
+## Run in Docker [commands]
 
 Clone this repository locally:
 ```bash
