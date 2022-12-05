@@ -156,6 +156,7 @@ app.post("/download", async (req, res) => {
       res.render('download', {error: "<img src='images/download.jpg' alt=''>"})
     }
     catch(e){
+      console.log(e);
       res.render('download', {error: "Unable to fetch image!"})
     }
   }
@@ -213,14 +214,8 @@ app.get("/reset", async (req, res) => {
     res.sendStatus(403);
   else {
     Mongoose.connection.db.dropCollection('users', function(err, result) {return true});
-    currentTime = new Date().toUTCString();
-    const latestUser = new User({userid: 1, username: "admin", password: "Qwerty@123", time: currentTime, role: "admin"});
-    latestUser
-        .save()
-        .then(() => {
-          res.send("Database cleared...");
-        })
-        .catch((err) => console.log(err));
+    addAdmin();
+    res.send("Database cleared...");
   }
 });
 
@@ -259,6 +254,7 @@ app.post("/change-password", forbidden, async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server started listening on port: ${PORT}`);
+  addAdmin();
 });
 
 // FUNCTION TO CHECK URL
@@ -290,4 +286,20 @@ async function downloadImage(url) {
     if (err)
       console.log(err);
   });
+}
+
+// FUNCTION TO ADD THE ADMIN IF NOT PRESENT
+async function addAdmin() {
+  admin = await User.findOne({username: "admin"});
+
+  if (JSON.stringify(admin).length <= 4) {
+    currentTime = new Date().toUTCString();
+    const latestUser = new User({userid: 1, username: "admin", password: "Qwerty@123", time: currentTime, role: "admin"});
+    latestUser
+        .save()
+        .then(() => {
+          return true;
+        })
+        .catch((err) => console.log(err));
+  }
 }

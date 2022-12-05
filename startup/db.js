@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 module.exports = () => {
-  // MongoDB connection with localhost
-  mongoose.connect("mongodb://localhost:27017/simpleapp", {
+  // MongoDB connection
+  mongoose.connect("mongodb://mongo:27017/simpleapp", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })

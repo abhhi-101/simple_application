@@ -7,6 +7,18 @@
 - **Database**: MongoDB
 - **Platform (developed on)**: Ubuntu 20.04
 
+## Run in Docker
+
+Run the application in a docker comtainer using this command:
+```bash
+docker-compose up -d
+```
+
+Stop the running container using this command command:
+```bash
+docker-compose down
+```
+
 ## Features
 
 1. User login
@@ -28,15 +40,21 @@
 - Go to the login page.
 - Enter any valid username and an arbitrary password while intercepting the request in Burp.
 - Replace the value of the Content-Type header with the below data to change it to JSON.
-`application/json;charset=UTF-8`
+```
+application/json;charset=UTF-8
+```
 - Replace the request body with the below JSON data containing the payload.
-`{"username":"admin","password":{"$ne": 1}}`
+```
+{"username":"admin","password":{"$ne": 1}}
+```
 - Send the request to get authenticated.
 	
 2. **Reflected XSS**
 - Get authenticated and go to the user search page.
 - Enter the below XSS payload in the search bar and submit to execute it.
-`<script>alert(document.domain)</script>`
+```
+<script>alert(document.domain)</script>
+```
 		
 3. **Server-side request forgery (SSRF)**
 - Get authenticated and go to the image download page.
