@@ -9,12 +9,12 @@
 
 ## Run in Docker
 
-Run the application in a docker comtainer using this command:
+Run the application in a docker container using this command:
 ```bash
 docker-compose up -d
 ```
 
-Stop the running container using this command command:
+Stop the running container using this command:
 ```bash
 docker-compose down
 ```
