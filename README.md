@@ -7,14 +7,24 @@
 - **Database**: MongoDB
 - **Platform (developed on)**: Ubuntu 20.04
 
-## Run in Docker
+## Run in Docker [Commands]
 
-Run the application in a docker container using this command:
+Clone this repository locally:
+```bash
+git clone https://github.com/ratnakar-infosec/simple_application.git
+```
+
+Move to the application directory:
+```bash
+cd simple_application/
+```
+
+Run the application in a docker container:
 ```bash
 docker-compose up -d
 ```
 
-Stop the running container using this command:
+Stop the running container:
 ```bash
 docker-compose down
 ```
