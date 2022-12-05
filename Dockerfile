@@ -1,4 +1,4 @@
-# User Node:12.22.9-alpine as the base image
+# Use Node:12.22.9-alpine as the base image
 FROM node:12.22.9-alpine
 
 # Set /usr/src/app as the working directory
